@@ -6,25 +6,32 @@
 
 #include "map.h"
 #include "player.h"
+#include "renderer.h"
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode({800,600}), "Cub3D++");
 
 	std::vector<std::vector<int>> grid = {
-		{1, 1, 1, 1, 1, 1, 1, 1},
-		{1, 0, 0, 0, 1, 0, 0, 1},
-		{1, 0, 1, 0, 1, 0, 0, 1},
-		{1, 1, 1, 1, 1, 1, 1, 1},
-		{1, 0, 0, 0, 0, 1, 0, 1},
-		{1, 0, 0, 0, 0, 1, 0, 1},
-		{1, 0, 0, 0, 0, 1, 0, 1},
-		{1, 1, 1, 1, 1, 1, 1, 1}
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 	};
 
-	Map map(32.0f, grid);
+	Map map(48.0f, grid);
 	Player player;
 	player.position = sf::Vector2f(50, 50);
+
+	Renderer renderer;
 
 	sf::Clock gameClock;
 	while (window.isOpen())
@@ -46,6 +53,7 @@ int main()
 		player.update(deltaTime);
 		window.clear();
 		map.draw(window);
+		renderer.drawRays(window, player, map);
 		player.draw(window);
 		window.display();
 	}

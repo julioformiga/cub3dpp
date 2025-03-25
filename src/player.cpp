@@ -8,20 +8,19 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <cmath>
 
-constexpr float PI = 3.141592653589793f;
-constexpr float TURN_SPEED = 300.0f;
+constexpr float TURN_SPEED = 200.0f;
 constexpr float MOVE_SPEED = 100.0f;
 
 void Player::draw(sf::RenderTarget &target) {
 	sf::CircleShape circle(8.0f);
 	circle.setOrigin({circle.getRadius(), circle.getRadius()});
 	circle.setPosition(position);
-	circle.setFillColor(sf::Color::Blue);
+	circle.setFillColor(sf::Color::Red);
 
 	sf::RectangleShape line(sf::Vector2f(24.0f, 2.0f));
 	line.setPosition(position);
 	line.setRotation(sf::Angle(sf::degrees(angle)));
-	line.setFillColor(sf::Color::Blue);
+	line.setFillColor(sf::Color::Red);
 
 	target.draw(line);
 	target.draw(circle);
@@ -35,13 +34,13 @@ void Player::update(float deltaTime) {
 		angle += TURN_SPEED * deltaTime;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up)) {
-		float radians = angle * PI / 180.0f;
+		float radians = angle * M_PI / 180.0f;
 
 		position.x += std::cos(radians) * MOVE_SPEED * deltaTime;
 		position.y += std::sin(radians) * MOVE_SPEED * deltaTime;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Down)) {
-		float radians = angle * PI / 180.0f;
+		float radians = angle * M_PI / 180.0f;
 
 		position.x -= std::cos(radians) * MOVE_SPEED * deltaTime;
 		position.y -= std::sin(radians) * MOVE_SPEED * deltaTime;

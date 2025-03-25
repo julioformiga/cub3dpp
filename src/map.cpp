@@ -33,3 +33,11 @@ void Map::draw(sf::RenderTarget &target) {
 		}
 	}
 }
+
+const std::vector<std::vector<int>> &Map::getGrid() const {
+	return grid;
+}
+
+float Map::getCellSize() const {
+	return cellSize;
+}
