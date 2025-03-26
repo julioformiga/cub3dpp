@@ -8,8 +8,8 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <cmath>
 
-constexpr float TURN_SPEED = 200.0f;
-constexpr float MOVE_SPEED = 100.0f;
+constexpr float TURN_SPEED = 100.0f;
+constexpr float MOVE_SPEED = 200.0f;
 
 void Player::draw(sf::RenderTarget &target) {
 	sf::CircleShape circle(8.0f);

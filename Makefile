@@ -39,7 +39,7 @@ re: fclean all
 run:
 	@mkdir -p build
 	cmake -B build && cmake --build build
-	./build/cub3dpp
+	./build/cub3dpp ./assets/test.map
 
 .PHONY: all clean fclean re run
 

@@ -10,26 +10,12 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode({800,600}), "Cub3D++");
+	sf::RenderWindow window(sf::VideoMode({(int)SCREEN_W, (int)SCREEN_H}),
+						 "Cub3D++", sf::Style::Close | sf::Style::Titlebar);
 
-	std::vector<std::vector<int>> grid = {
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		{1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1},
-		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-	};
-
-	Map map(48.0f, grid);
+	Map map(48.0f, "assets/map.png");
 	Player player;
-	player.position = sf::Vector2f(50, 50);
+	player.position = sf::Vector2f(300, 200);
 
 	Renderer renderer;
 
@@ -52,9 +38,10 @@ int main()
 
 		player.update(deltaTime);
 		window.clear();
-		map.draw(window);
-		renderer.drawRays(window, player, map);
-		player.draw(window);
+		// map.draw(window);
+		renderer.draw3dView(window, player, map);
+		// renderer.drawRays(window, player, map);
+		// player.draw(window);
 		window.display();
 	}
 
