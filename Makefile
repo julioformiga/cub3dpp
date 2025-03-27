@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -Wextra -Werror -MMD -MP
+CFLAGS = -Wall -Wextra -Werror -MMD -MP -fdiagnostics-all-candidates
 LFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 
 BIN_DIR	= bin/

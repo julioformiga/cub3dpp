@@ -1,5 +1,5 @@
-#ifndef _MAP_H
-#define _MAP_H
+#ifndef _MAP_H_
+#define _MAP_H_
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <filesystem>
