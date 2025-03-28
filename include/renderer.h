@@ -19,7 +19,6 @@ public:
 	Renderer(): wallSprite(wallTexture) {}
 	void init();
 	void draw3dView(sf::RenderTarget &target, const Player &player, const Map &map);
-	void drawRays(sf::RenderTarget &target, const Player &player, const Map &map);
 private:
 	sf::Texture wallTexture;
 	sf::Sprite wallSprite;
