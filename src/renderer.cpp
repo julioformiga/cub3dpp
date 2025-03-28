@@ -11,10 +11,10 @@
 #include <iostream>
 #include <cmath>
 
-constexpr size_t MAX_RAYCASTING_DEPTH = 64;
-constexpr size_t NUM_RAYS = 600;
-constexpr float PLAYER_FOV = 60.0f;
-constexpr float COLUMN_WIDTH = SCREEN_W / (float)NUM_RAYS;
+constexpr size_t MAX_RAYCASTING_DEPTH = 28;
+// constexpr size_t NUM_RAYS = 600;
+// constexpr float PLAYER_FOV = 60.0f;
+// constexpr float COLUMN_WIDTH = SCREEN_W / (float)NUM_RAYS;
 
 struct Ray {
 	sf::Vector2f hitPosition;
@@ -106,20 +106,33 @@ void Renderer::draw3dView(sf::RenderTarget &target, const Player &player, const 
 			}
 			depth++;
 		}
-		float perpWallDist =
-			isHitVertical ? sideDist.y - deltaDist.y : sideDist.x - deltaDist.x;
-		float wallHeight = SCREEN_H / perpWallDist;
 
-		float wallStart = (-wallHeight + SCREEN_H) / 2.0f;
-		float wallEnd = (wallHeight + SCREEN_H) / 2.0f;
+		if (didHit) {
+			float perpWallDist =
+				isHitVertical ? sideDist.y - deltaDist.y : sideDist.x - deltaDist.x;
+			float wallHeight = SCREEN_H / perpWallDist;
 
-		sf::Vertex vertex;
-		vertex.position = sf::Vector2f((float)i, wallStart);
-		walls.append(vertex);
+			float wallStart = (-wallHeight + SCREEN_H) / 2.0f;
+			float wallEnd = (wallHeight + SCREEN_H) / 2.0f;
 
-		vertex.position = sf::Vector2f((float)i, wallEnd);
-		walls.append(vertex);
+			float textureSize = wallTexture.getSize().x;
 
+			float wallX = isHitVertical ? rayPos.x + perpWallDist * rayDir.x
+										: rayPos.y + perpWallDist * rayDir.y;
+
+			wallX -= std::floor(wallX);
+
+			float textureX = wallX * textureSize;
+			float brightness = 1.0f - (perpWallDist / (float)MAX_RAYCASTING_DEPTH);
+
+			if (isHitVertical)
+				brightness *= 0.7f;
+
+			sf::Color color = sf::Color(255 * brightness, 255 * brightness, 255 * brightness);
+			walls.append({sf::Vector2f((float)i, wallStart), color, sf::Vector2f(textureX, 0.0f)});
+			walls.append({sf::Vector2f((float)i, wallEnd),   color, sf::Vector2f(textureX, textureSize)});
+		}
 	}
-	target.draw(walls);
+	sf::RenderStates states{&wallTexture};
+	target.draw(walls, states);
 }
