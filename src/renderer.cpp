@@ -1,17 +1,13 @@
 #include "renderer.h"
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/RenderStates.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Vertex.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/System/Vector2.hpp>
-#include <iostream>
-#include <cmath>
+#include <cstddef>
 
 constexpr size_t MAX_RAYCASTING_DEPTH = 28;
+constexpr float CAMERA_Z = 0.5f * SCREEN_H;
 // constexpr size_t NUM_RAYS = 600;
 // constexpr float PLAYER_FOV = 60.0f;
 // constexpr float COLUMN_WIDTH = SCREEN_W / (float)NUM_RAYS;
@@ -24,15 +20,20 @@ struct Ray {
 	bool isHitVertical;
 };
 
-
 void Renderer::init() {
-	if (!wallTexture.loadFromFile("./assets/texturewall.png")) {
+	if (!floorTexture.loadFromFile("./assets/texture_floor.png")) {
+		std::cerr << "Failed to load texture" << std::endl;
+	}
+	if (floorTexture.getSize().x != floorTexture.getSize().y) {
+		std::cerr << "ERROR: Texture is not square" << std::endl;
+	}
+	if (!wallTexture.loadFromFile("./assets/texture_wall.png")) {
 		std::cerr << "Failed to load texture" << std::endl;
 	}
 	if (wallTexture.getSize().x != wallTexture.getSize().y) {
 		std::cerr << "ERROR: Texture is not square" << std::endl;
 	}
-	wallSprite = sf::Sprite(wallTexture);
+	// wallSprite = sf::Sprite(wallTexture);
 }
 
 void Renderer::draw3dView(sf::RenderTarget &target, const Player &player, const Map &map) {
@@ -54,7 +55,26 @@ void Renderer::draw3dView(sf::RenderTarget &target, const Player &player, const 
 		std::cos(radians),
 		std::sin(radians)
 	};
-	sf::Vector2f plane{-direction.y, direction.x};
+	sf::Vector2f plane{-direction.y, direction.x * 0.66f};
+
+	sf::Vector2f position = player.position / map.getCellSize();
+
+	sf::VertexArray floorPixels{sf::PrimitiveType::Points};
+
+	for (size_t y = SCREEN_H / 2; y < SCREEN_H; y++) {
+		sf::Vector2f rayDirLeft{direction - plane}, rayDirRight{direction + plane};
+		float rowDistance = CAMERA_Z / ((float)y - SCREEN_H / 2);
+		sf::Vector2f floorStep = rowDistance * (rayDirRight - rayDirLeft) / SCREEN_W;
+		sf::Vector2f floor = position + rowDistance * rayDirLeft;
+
+		for (size_t x = 0; x < SCREEN_W; x++) {
+			sf::Vector2i cell{floor};
+			float textureSize = floorTexture.getSize().x;
+			sf::Vector2f textCoords{textureSize * (floor - (sf::Vector2f)cell)};
+			floorPixels.append({sf::Vector2f(x, y), sf::Color::White, textCoords});
+			floor += floorStep;
+		}
+	}
 
 	sf::VertexArray walls{sf::PrimitiveType::Lines};
 
@@ -133,6 +153,8 @@ void Renderer::draw3dView(sf::RenderTarget &target, const Player &player, const 
 			walls.append({sf::Vector2f((float)i, wallEnd),   color, sf::Vector2f(textureX, textureSize)});
 		}
 	}
-	sf::RenderStates states{&wallTexture};
+	sf::RenderStates states{&floorTexture};
+	target.draw(floorPixels, states);
+	states.texture = &wallTexture;
 	target.draw(walls, states);
 }
