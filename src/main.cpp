@@ -44,6 +44,7 @@ int main()
 		// renderer.drawRays(window, player, map);
 		// player.draw(window);
 		window.display();
+		window.setTitle("Cub3D++ - FPS: " + std::to_string(1.0f / deltaTime));
 	}
 
 	return 0;

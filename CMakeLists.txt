@@ -41,7 +41,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -MMD -MP -fdiagnostics-all-candidates)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -MMD -MP -O1)
 elseif(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4)
 endif()
