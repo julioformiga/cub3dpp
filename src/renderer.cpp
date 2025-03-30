@@ -1,10 +1,4 @@
 #include "renderer.h"
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/PrimitiveType.hpp>
-#include <SFML/Graphics/Vertex.hpp>
-#include <SFML/Graphics/VertexArray.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <cstddef>
 
 constexpr size_t MAX_RAYCASTING_DEPTH = 28;
 constexpr float CAMERA_Z = 0.5f * SCREEN_H;
@@ -21,14 +15,18 @@ struct Ray {
 };
 
 void Renderer::init() {
+	if (!skyTexture.loadFromFile("./assets/texture_sky.png")) {
+		std::cerr << "Failed to load sky texture" << std::endl;
+	}
+	skyTexture.setRepeated(true);
 	if (!floorTexture.loadFromFile("./assets/texture_floor.png")) {
-		std::cerr << "Failed to load texture" << std::endl;
+		std::cerr << "Failed to load floor texture" << std::endl;
 	}
 	if (floorTexture.getSize().x != floorTexture.getSize().y) {
 		std::cerr << "ERROR: Texture is not square" << std::endl;
 	}
 	if (!wallTexture.loadFromFile("./assets/texture_wall.png")) {
-		std::cerr << "Failed to load texture" << std::endl;
+		std::cerr << "Failed to load wall texture" << std::endl;
 	}
 	if (wallTexture.getSize().x != wallTexture.getSize().y) {
 		std::cerr << "ERROR: Texture is not square" << std::endl;
@@ -56,11 +54,33 @@ void Renderer::draw3dView(sf::RenderTarget &target, const Player &player, const 
 		std::sin(radians)
 	};
 	sf::Vector2f plane{-direction.y, direction.x * 0.66f};
-
 	sf::Vector2f position = player.position / map.getCellSize();
 
-	sf::VertexArray floorPixels{sf::PrimitiveType::Points};
+	float xOffset = fmodf(player.angle * (skyTexture.getSize().x / 360.0f), skyTexture.getSize().x);
+	if (xOffset < 0)
+		xOffset += skyTexture.getSize().x;
 
+	float textureWidth = static_cast<float>(skyTexture.getSize().x);
+	float textureHeight = static_cast<float>(skyTexture.getSize().y);
+
+	float proportion = SCREEN_W / textureWidth;
+	float visibleTextureWidth = proportion * textureWidth;
+
+	sf::Vertex sky[] = {
+		{{0, 0}, sf::Color::White, {xOffset, 0}},
+		{{SCREEN_W, 0}, sf::Color::White, {xOffset + visibleTextureWidth, 0}},
+		{{0, SCREEN_H / 2}, sf::Color::White, {xOffset, textureHeight}},
+
+		{{0, SCREEN_H / 2}, sf::Color::White, {xOffset, textureHeight}},
+		{{SCREEN_W, 0}, sf::Color::White, {xOffset + visibleTextureWidth, 0}},
+		{{SCREEN_W, SCREEN_H / 2}, sf::Color::White, {xOffset + visibleTextureWidth, textureHeight}}
+	};
+
+	sf::RenderStates states_sky;
+	states_sky.texture = &skyTexture;
+	target.draw(sky, 6, sf::PrimitiveType::Triangles, states_sky);
+
+	sf::VertexArray floorPixels{sf::PrimitiveType::Points};
 	for (size_t y = SCREEN_H / 2; y < SCREEN_H; y++) {
 		sf::Vector2f rayDirLeft{direction - plane}, rayDirRight{direction + plane};
 		float rowDistance = CAMERA_Z / ((float)y - SCREEN_H / 2);
