@@ -1,16 +1,5 @@
 #include "player.h"
 
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/System/Angle.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window/Keyboard.hpp>
-#include <cmath>
-
-constexpr float TURN_SPEED = 100.0f;
-constexpr float MOVE_SPEED = 200.0f;
-
 void Player::draw(sf::RenderTarget &target) {
 	sf::CircleShape circle(8.0f);
 	circle.setOrigin({circle.getRadius(), circle.getRadius()});
@@ -27,22 +16,26 @@ void Player::draw(sf::RenderTarget &target) {
 }
 
 void Player::update(float deltaTime) {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left)) {
-		angle -= TURN_SPEED * deltaTime;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::H)) {
+		angle -= PLAYER_TURN_SPEED * deltaTime;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right)) {
-		angle += TURN_SPEED * deltaTime;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::L)) {
+		angle += PLAYER_TURN_SPEED * deltaTime;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::K)) {
 		float radians = angle * M_PI / 180.0f;
 
-		position.x += std::cos(radians) * MOVE_SPEED * deltaTime;
-		position.y += std::sin(radians) * MOVE_SPEED * deltaTime;
+		position.x += std::cos(radians) * PLAYER_MOVE_SPEED * deltaTime;
+		position.y += std::sin(radians) * PLAYER_MOVE_SPEED * deltaTime;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Down)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Down) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::J)) {
 		float radians = angle * M_PI / 180.0f;
 
-		position.x -= std::cos(radians) * MOVE_SPEED * deltaTime;
-		position.y -= std::sin(radians) * MOVE_SPEED * deltaTime;
+		position.x -= std::cos(radians) * PLAYER_MOVE_SPEED * deltaTime;
+		position.y -= std::sin(radians) * PLAYER_MOVE_SPEED * deltaTime;
 	}
 }

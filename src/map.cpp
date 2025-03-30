@@ -1,14 +1,4 @@
 #include "map.h"
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/Image.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <filesystem>
-#include <iostream>
-#include <fstream>
-#include <string>
 
 Map::Map(float cellSize, int width, int height)
 	: grid(height, std::vector(width, sf::Color::Black)), cellSize(cellSize) {};
