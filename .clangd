@@ -1,3 +1,11 @@
 CompileFlags:
   Add:
-    ["-Wall", "-Wextra", "-Werror", "-Wpedantic", "-I../include", "-std=c++17"]
+    [
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wpedantic",
+      "-I../include",
+      "-I../build/_deps/sfml-src/include",
+      "-std=c++17",
+    ]
